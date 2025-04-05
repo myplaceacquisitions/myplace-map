@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MyPlace Property Map</title>
+    <meta charset="utf-8" />
+    <style>
+      html, body { height: 100%; margin: 0; padding: 0; }
+      #map { height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      function initMap() {
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 39.8283, lng: -98.5795 },
+          zoom: 5
+        });
+
+        map.data.loadGeoJson('USE_MyPlace_Asset_List_FIXED.geojson');
+
+        map.data.addListener('click', function(event) {
+          const name = event.feature.getProperty('Asset Name');
+          const address = event.feature.getProperty('Full Address');
+          const phone = event.feature.getProperty('Main Office #');
+
+          const content = `
+            <strong>${name}</strong><br/>
+            ${address}<br/>
+            📞 ${phone}
+          `;
+
+          const infoWindow = new google.maps.InfoWindow({
+            content: content,
+            position: event.latLng
+          });
+
+          infoWindow.open(map);
+        });
+      }
+    </script>
+
+    <script async
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB60QKUQpUp8lS--vXQp8JxfyAorHFP_H8&callback=initMap">
+    </script>
+  </body>
+</html>
